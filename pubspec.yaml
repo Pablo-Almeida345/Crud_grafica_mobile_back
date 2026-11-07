@@ -1,0 +1,15 @@
+name: api_grafica
+description: API para gerenciar grafica
+version: 1.0.0
+publish_to: none
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  dart_frog: ^1.2.0
+  supabase: ^2.5.0
+
+dev_dependencies:
+  dart_frog_cli: ^1.2.0
+  test: ^1.24.0
