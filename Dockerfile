@@ -16,14 +16,13 @@ COPY . .
 # Executa o build de produção do Dart Frog
 RUN dart pub global run dart_frog_cli:dart_frog build
 
-# Compila o binário gerado pelo Dart Frog a partir do diretório correto de build
+# Compila o binário gerado pelo Dart Frog
 RUN mkdir -p bin && dart compile exe build/bin/server.dart -o bin/server
 
 # Imagem final de produção
 FROM scratch
 COPY --from=build /runtime/ /
 COPY --from=build /app/bin/server /app/bin/server
-COPY --from=build /app/public /app/public
 
 EXPOSE 8080
 
