@@ -4,8 +4,8 @@ FROM dart:stable AS build
 # Define o diretório de trabalho dentro do container
 WORKDIR /app
 
-# Copia os ficheiros de dependências
-COPY pubspec.yaml pubspec.lock ./
+# Copia apenas o ficheiro de dependências compatível
+COPY pubspec.yaml ./
 RUN dart pub get
 
 # Copia todo o código fonte do projeto
