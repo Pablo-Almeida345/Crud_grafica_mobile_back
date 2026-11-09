@@ -3,21 +3,21 @@ FROM dart:stable AS build
 
 WORKDIR /app
 
-# Instala o CLI do Dart Frog globalmente para poder fazer o build correto
+# Instala o CLI do Dart Frog globalmente
 RUN dart pub global activate dart_frog_cli
 
-# Copia os arquivos de configuração
+# Copia os arquivos de dependência
 COPY pubspec.yaml ./
 RUN dart pub get
 
 # Copia todo o código fonte do projeto
 COPY . .
 
-# Executa o build do Dart Frog para gerar os arquivos de produção em /app/build
+# Executa o build do Dart Frog para gerar a pasta de produção
 RUN dart pub global run dart_frog_cli:dart_frog build
 
-# Compila o binário gerado pelo Dart Frog em modo release
-RUN dart compile exe build/bin/server.dart -o bin/server
+# Garante que o diretório bin existe e compila o binário em modo release
+RUN mkdir -p bin && dart compile exe .dart_frog/build/bin/server.dart -o bin/server
 
 # Imagem final de produção
 FROM scratch
