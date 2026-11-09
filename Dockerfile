@@ -1,26 +1,30 @@
-# Usa a imagem oficial do Dart para o build
+# Usa a imagem oficial do Dart
 FROM dart:stable AS build
 
-# Define o diretório de trabalho dentro do container
 WORKDIR /app
 
-# Copia apenas o ficheiro de dependências compatível
+# Instala o CLI do Dart Frog globalmente para poder fazer o build correto
+RUN dart pub global activate dart_frog_cli
+
+# Copia os arquivos de configuração
 COPY pubspec.yaml ./
 RUN dart pub get
 
 # Copia todo o código fonte do projeto
 COPY . .
 
-# Compila o projeto em modo otimizado (release)
-RUN dart compile exe bin/server.dart -o bin/server
+# Executa o build do Dart Frog para gerar os arquivos de produção em /app/build
+RUN dart pub global run dart_frog_cli:dart_frog build
 
-# Cria a imagem final leve para produção
+# Compila o binário gerado pelo Dart Frog em modo release
+RUN dart compile exe build/bin/server.dart -o bin/server
+
+# Imagem final de produção
 FROM scratch
 COPY --from=build /runtime/ /
 COPY --from=build /app/bin/server /app/bin/server
+COPY --from=build /app/public /app/public
 
-# Expõe a porta padrão que o Render vai utilizar
 EXPOSE 8080
 
-# Comando para iniciar a API
 ENTRYPOINT ["/app/bin/server"]
