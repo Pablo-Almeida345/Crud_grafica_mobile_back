@@ -13,11 +13,11 @@ RUN dart pub get
 # Copia todo o código fonte do projeto
 COPY . .
 
-# Executa o build do Dart Frog para gerar a pasta de produção
+# Executa o build de produção do Dart Frog
 RUN dart pub global run dart_frog_cli:dart_frog build
 
-# Garante que o diretório bin existe e compila o binário em modo release
-RUN mkdir -p bin && dart compile exe .dart_frog/build/bin/server.dart -o bin/server
+# Compila o binário gerado pelo Dart Frog a partir do diretório correto de build
+RUN mkdir -p bin && dart compile exe build/bin/server.dart -o bin/server
 
 # Imagem final de produção
 FROM scratch
